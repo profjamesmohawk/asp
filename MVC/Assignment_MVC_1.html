@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		COMP-CO884
+	</title>
+</head>
+
+<body>
+<h1>MVC Assignment 1: Game Rental Site</h1>
+<p class="description">
+You will build a simple site to track games for a game rental store.
+</p>
+
+<h2>Part A: Project Setup</h2>
+<ol>
+<li>Template: <strong>ASP.NET Core Web App (Model-View-Controller) C#</strong> </li>
+<li>Project name: <strong>MvcGame</strong> </li>
+<li>Solution name: <strong>MvcGame</strong> </li>
+<li>Configure for HTTPS: <strong>not selected</strong>
+</li>
+</ol>
+
+<hr>
+<h2>Part B: Game Class</h2>
+<p class="description">
+Create a C# class to model our game data. 
+</p>
+<ol>
+    <li>GameId as an integer, which will be the Key</li>
+    <li>Title as a string (required)</li>
+    <li>Developer as a string (required)</li>
+    <li>Genre as a string (required)</li>
+    <li>ReleaseYear as an integer (required)</li>
+    <li>PurchaseDate as a DateTime (not required)</li>
+</ol>
+
+<hr>
+<h2>Part C: Games Controller</h2>
+<ol>
+    <li>Scaffold an MVC Controller with views, using Entity Framework named GamesController</li>
+    <li>Change the database to SQLite and name it games.db </li>
+    <li>Do not seed the database programmatically</li>
+    <li>Add at least 3 games to your database interactively; ensure they are different than the games in the screenshots</li>
+
+</ol>
+
+<hr>
+<h2>Part D: Layout</h2>
+<ol>
+<li>Modify _Layout.cshtml and Home/Index.cshtml
+<ol type=a>
+<li>Set the title to your store's name (you can be creative) </li>
+<li>Place a logo, image, or slogan for your store on the home page </li>
+<li>Add an anchor <strong>Games</strong> to the page header that links to GamesController/Index
+</li>
+</ol>
+</li>
+</ol>
+<hr>
+<h2>Part E: Submission</h2>
+<p class="description">
+Submit a zip archive containing your project to the Canvas drop box.
+</p>
+
+</body>
+</html>

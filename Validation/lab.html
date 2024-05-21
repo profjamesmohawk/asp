@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		COMP-CO884
+	</title>
+</head>
+
+<body>
+<h1>Custom Validation Lab </h1>
+<p class="description">
+We will add custom validation to a simple MVC site.
+</p>
+
+<h2>Part A: Set-up</h2>
+<ol>
+<li>Create a simple MVC site to track bicycles.  </li>
+<li>Use this model
+<pre class="code">
+public class Bike
+{
+    public int Id { get; set; }
+    public string? Model { get; set; }
+    public string? Type { get; set; }
+    public string? FrameMaterial {get; set;}
+}</pre>
+</li>
+</ol>
+
+<hr>
+<h2>Part B: Custom Validation Attribute </h2>
+<p class="description">
+We will add a custom validation attribute to ensure that the value of the type field is one of: road, mountain, or gravel.
+</p>
+<ol>
+<li>Define the attribute in a file named <strong>BikeTypeAttribute.cs</strong> in the models folder
+<pre class="code">
+using Humanizer.Localisation;
+using System.ComponentModel.DataAnnotations;
+using MvcBikes.Models;
+
+public class BikeTypeAttribute : ValidationAttribute
+{
+
+    public string GetErrorMessage()
+    {
+        return "Type must be road, mountain, or gravel";
+    }
+
+    protected override ValidationResult? IsValid(
+        object? value, ValidationContext validationContext)
+    {
+        var bike = (Bike)validationContext.ObjectInstance;
+       
+        if (bike.Type == "road" ||
+            bike.Type == "mountain" ||
+            bike.Type == "gravel"
+            )
+        {
+            return ValidationResult.Success;
+        }
+        else
+        {
+            return new ValidationResult(GetErrorMessage());
+        }
+    }
+}
+</pre>
+</li>
+<li>Decorate the Bike model (Bike.cs)
+<pre class="code">
+    [BikeTypeAttribute]
+    public string? Type { get; set; }
+</pre>
+</li>
+<li>Test our work from the Create and Update pages.
+</li>
+</ol>
+
+<hr>
+<h2>Part C: Implement Ivalidatable</h2>
+<p class="description">
+We will implement a multi-field validator to enforce the rule: "The model straggler is a gravel bike."
+</p>
+
+<ol>
+<li>Implement IValidatable in Bike.cs
+<pre class="code">
+public class Bike : IValidatableObject
+...
+    public IEnumerable&lt;ValidationResult&gt; Validate(ValidationContext validationContext)
+    {
+        if (Model == "straggler" && Type != "gravel")
+        {
+            yield return new ValidationResult(
+                "straggler is gravel bike",
+                new[] { nameof(Model), nameof(Type) });
+        }
+    } </pre>
+</li>
+<li>Test our work from the Create and Update pages.  </li>
+</ol>
+<hr>
+<h2>Part D: Exercise</h2>
+<ol>
+<li>Add a Custom Validation Attribute named <span class=cmd>FrameMaterialAttribute</span> to enforce values of: steal, aluminum, or carbon.
+</li>
+<li>Modify Bike.Validate() to enforce the fact that a <a href="http://www.marinoni.qc.ca/html/piuma_en.html">Piuma</a> is a steel road bike.
+</li>
+</ol>
+</body>
+</html>
