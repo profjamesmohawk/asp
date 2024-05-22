@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		COMP-CO884
+	</title>
+</head>
+
+<body>
+<h1>Sorting Lab </h1>
+<p class="description">
+We will start with a site similar to the one we created in the Data Access Lab and add sorting to the Index view.
+</p>
+
+<hr>
+<h2>Part A: Review</h2>
+<ol>
+<li>Use the Data Access Lab as a reference to create a site that displays Items like this...
+<img src="./Items_Index.png" alt="Index page for Items">
+</li>
+</ol>
+
+<hr>
+<h2>Part B: Default Sort</h2>
+<p class="description">
+We will modify the controller code so that the table is sorted by Description.
+</p>
+<ol>
+<li>Modify ItemsController.cs, replacing the Index() method with this code
+<pre class="code">
+        public async Task<IActionResult> Index()
+        {
+            /* old generated code
+            var chdbContext = _context.Items.Include(i => i.PrimaryVendor);
+
+            return View(await chdbContext.ToListAsync());
+            */
+
+            // get a 'fresh' query 
+            var myItems = from item in _context.Items
+                          select item;
+
+            // join with vendor 
+            myItems = myItems.Include(item => item.PrimaryVendor);
+
+            // sort
+            myItems = myItems.OrderBy(item => item.ItemDescription);
+
+            return View(await  myItems.ToListAsync());
+        }
+</pre>
+</li>
+<li>Test our work.  The table should now be sorted by Description
+</li>
+</ol>
+
+<hr>
+<h2>Part B: Add a sort link </h2>
+<p class="description">
+We will make the Desc heading a hyper-link so that we can toggle between ascending and descending sort.
+</p>
+<ol>
+	<li>Add a <span class=cmd>sortOrder</span> parameter to the Index method and have it default to <strong>description_a</strong> indicating 'sort on description in ascending order'.  (<strong>description_d</strong> will indicate descending order)
+<pre class="code">
+public async Task<IActionResult> Index(string sortOrder="description_a")
+</pre>
+	</li>
+	<li>Update the sort code
+<pre class="code">
+            switch (sortOrder)
+            {
+                case "description_a":
+                    myItems = myItems.OrderBy(item => item.ItemDescription);
+                    ViewData["DescriptionSortParam"] = "description_d";
+                    break;
+
+                case "description_d":
+                    myItems = myItems.OrderByDescending(item => item.ItemDescription);
+                    ViewData["DescriptionSortParam"] = "description_a";
+                    break;
+            }
+</pre>
+	</li>
+	<li>Test our work by navigating to <strong>/Items?sortOrder=description_d</strong> </li>
+	<li>Make the Description column heading a link that toggles between description_a and description_d by updating Views/Items/Index.cshtml
+<pre class="code">
+                @* Comment out old/default code
+                @Html.DisplayNameFor(model =&gt; model.ItemDescription)
+                *@
+                &lt;a asp-action="Index" asp-route-sortOrder="@ViewData["DescriptionSortParam"]"&gt;
+                    @Html.DisplayNameFor(model =&gt; model.ItemDescription)
+                &lt;/a&gt
+</pre>
+	</li>
+</ol>
+
+<hr>
+<h2>Part C: Exercise</h2>
+<ol>
+	<li>Add the ability to sort by Cost </li>
+	<li>Add the ability to sort by Vendor Name </li>
+</ol>
+
+<hr>
+<h2>Part D: Optional Advanced Exercise</h2>
+<p class="description">
+Our solution includes many magic strings like "description_d", this is not very pro even if it is common in web applications.  Your mission is to refactor the code removing the reliance on magic strings.
+</p>
+
+</body>
+</html>

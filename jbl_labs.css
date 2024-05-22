@@ -11,6 +11,11 @@ font-size: 1em;
 margin-left: 20px;
 }
 
+ul{
+        list-style-type: none;
+}
+
+
 li {
 	margin-top: 10px;
 	line-height: 120%;

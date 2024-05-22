@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		COMP-CO884
+	</title>
+</head>
+
+<body>
+<h1>Data Access Lab </h1>
+<p class="description">
+We will use the Entity Framework in <strong>DB First</strong> mode to create ASP code based on a database. 
+We will use the CHDB data base described in the course reference material: <a href="../sql/sql.html">SQL DDL</a>
+Our sample application will display items and vendors.
+</p>
+
+<hr>
+<h2>Part A: Setup</h2>
+<ol>
+<li>Create a new MVC Project: ASP.NET Core Web App (Modle-View-Controller) </li>
+<li>Build the DB
+<ol type=a>
+<li>Download chdb.sql and open the file in visual studio. </li>
+<li>Execute the SQL by clicking the green arrow in the files tab </li>
+<li>Select <strong>MSSQLLocalDB</strong> from the <strong>Local</strong> list </li>
+<li>Click <strong>Connect</strong> to execute the SQL </li>
+</ol>
+</li>
+</ol>
+
+<hr>
+<h2>Part B: Configure and Scaffold</h2>
+<ol>
+	<li>Set the connection string in appsettings.json
+<pre class="code">
+  "ConnectionStrings": {
+     "CHDB": "Server=(LocalDB)\\MSSQLLocalDB;Database=chdb;Trusted_Connection=True"
+  }
+</pre>
+	</li>
+	<li>Scaffold models for the vendors and items tables from the Nuget package manager console
+<pre class="code">
+Install-Package Microsoft.EntityFrameworkCore.Tools -Version 8
+Install-Package Microsoft.EntityFrameworkCore.SqlServer -Version 8
+Scaffold-DbContext -Connection name=CHDB -Provider Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -ContextDir Data -DataAnnotations -Tables vendors, items
+</pre>
+	</li>
+	<li>Add code to program.cs to inject the DbContext
+<pre class="code">
+// LocalDB, CHDB (add before builder.Build() call)
+builder.Services.AddDbContext&lt;ChdbContext&gt;(options =&gt;
+    options.UseSqlServer(builder.Configuration.GetConnectionString("CHDB")));
+</pre>
+	</li>
+	<li>Scaffold a controller for items
+		<ol type=a>
+			<li>right click on the Controllers folder </li>
+			<li>Add -> Controller...  </li>
+			<li>Select MVC Controller with views, using Entity Framework </li>
+			<ul>
+				<li>Model class: Item (XXXX) </li>
+				<li>DbContext class: ChdnContext(XXXX) </li>
+			</ul>
+			<li>Click add
+			</li>
+		</ol>
+	</li>
+	<li>Test our work by running the site and navigating to /Items </li>
+</ol>
+<hr>
+<h2>Part C: Beautification</h2>
+<ol>
+	<li>Modify Views/Items/Index.cshtml to display vendor name not ID
+<pre class="code">
+	 @Html.DisplayFor(modelItem => item.PrimaryVendor.VendorName)
+</pre>
+	</li>
+	<li>Set nicer column headings by decorating the Items model with <span class=cmd>[DisplayName("DISPLAY_TEXT")]</span>
+<pre class="code">
+    [DisplayName("Description")] // make the column heading 'Description' not 'ItemDescription'
+    public string ItemDescription { get; set; } = null!;
+</pre>
+	</li>
+</ol>
+
+<hr>
+<h2>Part D: Exercise</h2>
+<ol>
+	<li>Create a new project and redo this lab with the following changes:
+		<ol type=a>
+<li>Scaffold models for  purchase_orders, vendors, and departments </li>
+<li>Scaffold a controller for purchase_orders (Model will be PurchaseOrders) </li>
+		</ol>
+	</li>
+</ol>
+</body>
+</html>
