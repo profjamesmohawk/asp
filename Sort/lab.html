@@ -18,7 +18,7 @@ We will start with a site similar to the one we created in the Data Access Lab a
 <h2>Part A: Review</h2>
 <ol>
 <li>Use the Data Access Lab as a reference to create a site that displays Items like this...
-<img src="./Items_Index.png" alt="Index page for Items">
+<img style="border: 2px solid #555;" src="./Items_Index.png" alt="Index page for Items">
 </li>
 </ol>
 
@@ -30,10 +30,10 @@ We will modify the controller code so that the table is sorted by Description.
 <ol>
 <li>Modify ItemsController.cs, replacing the Index() method with this code
 <pre class="code">
-        public async Task<IActionResult> Index()
+        public async Task&lt;IActionResult&gt; Index()
         {
             /* old generated code
-            var chdbContext = _context.Items.Include(i => i.PrimaryVendor);
+            var chdbContext = _context.Items.Include(i =&gt; i.PrimaryVendor);
 
             return View(await chdbContext.ToListAsync());
             */
@@ -43,10 +43,10 @@ We will modify the controller code so that the table is sorted by Description.
                           select item;
 
             // join with vendor 
-            myItems = myItems.Include(item => item.PrimaryVendor);
+            myItems = myItems.Include(item =&gt; item.PrimaryVendor);
 
             // sort
-            myItems = myItems.OrderBy(item => item.ItemDescription);
+            myItems = myItems.OrderBy(item =&gt; item.ItemDescription);
 
             return View(await  myItems.ToListAsync());
         }
@@ -64,7 +64,7 @@ We will make the Desc heading a hyper-link so that we can toggle between ascendi
 <ol>
 	<li>Add a <span class=cmd>sortOrder</span> parameter to the Index method and have it default to <strong>description_a</strong> indicating 'sort on description in ascending order'.  (<strong>description_d</strong> will indicate descending order)
 <pre class="code">
-public async Task<IActionResult> Index(string sortOrder="description_a")
+public async Task&lt;IActionResult&gt; Index(string sortOrder="description_a")
 </pre>
 	</li>
 	<li>Update the sort code
