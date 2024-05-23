@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		Filtering
+	</title>
+</head>
+
+<body>
+<h1>Filtering</h1>
+<p class="description">
+We will use an HTML select widget to filter purchase orders by vendor, using 
+the CHDB data base described in the course reference material: <a href="../sql/sql.html">SQL DDL</a>.
+</p>
+
+<hr>
+<h2>Part A: Setup</h2>
+<ol>
+<li>Create a new MVC Project: ASP.NET Core Web App (Modle-View-Controller) </li>
+<li>Project Name: FilterLab</li>
+<li>Scaffold Tables: vendors, purchase_orders, departments, provinces </li>
+<li>Add a controller with views for the PurchaseOrder model.  </li>
+<li>Check our work: /PurchaseOrders </li>
+</ol>
+
+<hr>
+<h2>Part B: Add Filtering to the Index method of the PurchaseOrders controller </h2>
+<ol>
+	<li>Add a nullable parameter vendorID to the signature, and filter the results.  
+<pre class="code">
+        // Get: PurchaseOrders
+        //   Filter on vendorID if not null
+        //
+        public async Task&lt;IActionResult&gt; Index(int? vendorID )
+        {
+            // Fetch all the purchase orders
+            //
+            var myPurchaseOrders = from a in _context.PurchaseOrders
+                                    .Include(a =&gt; a.Department)
+                                    .Include(a =&gt; a.Vendor)
+                             select a;
+
+            // If we were passed a VendorID, filter based on it
+            //
+            if (vendorID is not null)
+            {
+               myPurchaseOrders = myPurchaseOrders.Where(a =&gt; a.VendorId == vendorID);
+            }
+
+            return View(await myPurchaseOrders.ToListAsync());
+        }
+</pre>
+	</li>
+	<li>Test our work by navigating to PurchaseOrders?vendorID=2 </li>
+</ol>
+
+<hr>
+<h2>Part C: Add a select widget to the View</h2>
+<ol>
+	<li>Modify the controller to build a SelectList populated with a list of vendors and share that SelectList with the View by putting it in the ViewBag/ViewData.  Making our Index method look like this.
+<pre class="code">
+        // Get: PurchaseOrders
+        //   Filter on vendorID if not null
+        //
+        public async Task&lt;IActionResult&gt; Index(int? vendorID )
+        {
+            // shove a SelectList containing Vendor names and IDs into the ViewBag
+            // this list will be used in the View to populate the drop down list box 
+            //
+            ViewBag.Vendors = new SelectList(
+                    _context.Vendors.ToList().OrderBy(a =&gt;  a.VendorName), // list of Vendor objects
+                    nameof(Vendor.VendorId), // Name of the vendor property for list box value
+                    nameof(Vendor.VendorName)); // Name of the Vendor property for list box display
+
+            // Fetch all the purchase orders
+            //
+            var myPurchaseOrders = from a in _context.PurchaseOrders
+                                    .Include(a =&gt; a.Department)
+                                    .Include(a =&gt; a.Vendor)
+                             select a;
+
+            // If we were passed a VendorID, filter based on it
+            //
+            if (vendorID is not null)
+            {
+               myPurchaseOrders = myPurchaseOrders.Where(a =&gt; a.VendorId == vendorID);
+            }
+
+            return View(await myPurchaseOrders.ToListAsync());
+        }
+</pre>
+	</li>
+	<li>Use the Html.DropDownList() helper to render the select widget in the view 
+<pre class="code">
+&lt;form asp-action="Index" method="get"&gt;
+    &lt;p&gt;
+        Vendor:
+        @Html.DropDownList("vendorID",   @* parameter name passed to Index() method *@
+                 (IEnumerable&lt;SelectListItem&gt;)ViewBag.Vendors, @* List of Vendors from the controller *@
+                 "All", @* default selection *@
+                 new { onchange = "submit()" } @* code to execucte on select *@
+                 )
+    &lt;p&gt;
+&lt;/form&gt;
+</pre>
+	</li>
+</ol>
+
+
+<hr>
+<h2>Part D: Exercise</h2>
+<ol>
+	<li>Add a VendorsController and modify the Index View to filter on Province </li>
+</ol>
+
+<hr>
+<h2>Part E: Optional Advanced Exercise</h2>
+<p class="description">
+Replace the Html.DropDownList() html helper call with Razor code similar to that used in CounterWithSelect.cshtml from the Razor01 sample project. 
+</p>
+</body>
+</html>
