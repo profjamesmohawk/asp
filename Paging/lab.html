@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		COMP-CO884
+	</title>
+</head>
+
+<body>
+<h1>Paging</h1>
+<p class="description">
+We will use the LINQ Skip() and Take() methods to implement paging.
+We will use the CHDB data base described in the course reference material: <a href="../sql/sql.html">SQL DDL</a>.
+Our sample application will display medications.
+</p>
+
+<hr>
+<h2>Part A: Setup</h2>
+<ol>
+<li>Create a new MVC Project: ASP.NET Core Web App (Modle-View-Controller) </li>
+<li>Project Name: PagingLab</li>
+<li>Scaffold the medications table and a controller for Medication model.  </li>
+<li>Check our work: /Medications should display over 100 rows </li>
+</ol>
+
+<hr>
+<h2>Part B: Write a class named PageinatedList</h2>
+<p class="description">
+We could do everything the PaginatedList class does in our controller's Get() method. Using PaginagedList, will make our code cleaner and we can use PaginatedList to implement paging for any model.
+</p>
+<ol>
+	<li>Create PaginatedList.cs in the main project directory.  </li>
+	<li>Add these using statements to the top of PaginatedList.cs
+<pre class="code">
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+</pre>
+	</li>
+	<li>Use this code for the PaginatedList class
+<pre class="code">
+public class PaginatedList&lt;T&gt; : List&lt;T&gt;
+{
+        public int PageIndex { get; private set; }
+        public int TotalPages { get; private set; }
+
+        public PaginatedList(List&lt;T&gt; items, int count, int pageIndex, int pageSize)
+        {
+            PageIndex = pageIndex;
+            TotalPages = (int)Math.Ceiling(count / (double)pageSize);
+
+            this.AddRange(items);
+        }
+
+        public bool HasPreviousPage =&gt; PageIndex &gt; 1;
+
+        public bool HasNextPage =&gt; PageIndex &lt; TotalPages;
+
+        public static async Task&lt;PaginatedList&lt;T&gt;&gt; CreateAsync(IQueryable&lt;T&gt; source, int pageIndex, int pageSize)
+        {
+            var count = await source.CountAsync();
+            var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+            return new PaginatedList&lt;T&gt;(items, count, pageIndex, pageSize);
+        }
+}
+</pre>
+	</li>
+	<li>Review this code carefully, there is a lot going on.
+	</li>
+</ol>
+
+<hr>
+<h2>Part C: Add paging to Medications.Index()</h2>
+<ol>
+	<li>Add a pageNumber argumet that defaults to 1, making the method signature look like this..
+<pre class="code">
+public async Task&lt;IActionResult&gt; Index( int pageNumber=1)
+</pre>
+	</li>
+	<li>Add an integer to set pageSize to 5, and return a PaginatedList in place of the default List.
+<pre class="code">
+        public async Task&lt;IActionResult&gt; Index( int pageNumber=1)
+        {
+            int pageSize = 5;
+
+         // return View(await _context.Medications.ToListAsync());
+            return View(await PaginatedList&lt;Medication&gt;.CreateAsync(_context.Medications.AsNoTracking(), pageNumber, pageSize));
+        }
+</pre>
+	</li>
+	<li>Check our work by navigating to <strong>/medications</strong> and <strong>/medications?pageNumber=2</strong>
+	</li>
+</ol>
+
+<hr>
+<h2>Part D: Add Previous and Next page buttons</h2>
+<ol>
+<li>Add this code to the bottom of Views/Medications/Index.cshtml 
+<pre class="code">
+@{
+    var prevDisabled = !Model.HasPreviousPage ? &quot;disabled&quot; : &quot;&quot;;
+    var nextDisabled = !Model.HasNextPage ? &quot;disabled&quot; : &quot;&quot;;
+}
+
+&lt;a asp-action=&quot;Index&quot;
+   asp-route-pageNumber=&quot;@(Model.PageIndex - 1)&quot;
+   class=&quot;btn btn-default @prevDisabled&quot;&gt;
+    Previous
+&lt;/a&gt;
+&lt;a asp-action=&quot;Index&quot;
+   asp-route-pageNumber=&quot;@(Model.PageIndex + 1)&quot;
+   class=&quot;btn btn-default @nextDisabled&quot;&gt;
+    Next
+&lt;/a&gt;
+</pre>
+</li>
+<li>We will see 'red underlines' on some of this code, indicating a name space problem.  We can fix these by changing the @model declaration at the top of the page from IEnumberable to PaginatedList
+<pre class="code">
+@* comment out default declaration
+@model IEnumerable&lt;PagingLab.Models.Medication&gt;
+*@
+ @model PagingLab.PaginatedList&lt;PagingLab.Models.Medication&gt;
+</pre>
+</li>
+<li>Looks like we just moved the problem, we know have name space problems with our column headings.  We can fix this be adding <span class=cmd>.FirstOrDefault()</span> like this
+<pre class="code">
+@* comment out default code
+@Html.DisplayNameFor(model =&gt; model.MedicationDescription)
+*@
+@Html.DisplayNameFor(model =&gt; model.FirstOrDefault().MedicationDescription)
+</pre>
+</li>
+<li>Test our work.  We should have functioning Previous and Next buttons.
+</li>
+</ol>
+
+<hr>
+<h2>Part E: Exercise</h2>
+<ol>
+	<li>Modify the Medications controller so that the list is sorted by Description.  </li>
+	<li>Add Patients
+		<ol type=a>
+		<li>Scaffold the patients table
+<pre class="code">
+Scaffold-DbContext -Connection name=CHDB -Provider Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -ContextDir Data -DataAnnotations -Tables medications, patients -Force
+</pre>
+		</li>
+		<li>Generate a controller with views for the Patient model you just scaffolded </li>
+		<li>Add paging to the Index for Patients.
+		</li>
+
+		</ol>
+	</li>
+</ol>
+
+<hr>
+<h2>Part F: Optional Advanced Exercise</h2>
+<p class="description">
+It would be nice to change the pageSize without changing the source code.  Your mission is to modify the code to read the DefaultPageSize from the appsettings.json file.  The <a href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-8.0">Configuration</a> section of the documentation will help.  
+</p>
+<p class="description">
+If DefaultPageSize is not in appsettings.json, or is not an integer, set pageSize to 10.
+</p>
+</body>
+</html>

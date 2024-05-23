@@ -18,6 +18,7 @@ We will start with a site similar to the one we created in the Data Access Lab a
 <h2>Part A: Review</h2>
 <ol>
 <li>Use the Data Access Lab as a reference to create a site that displays Items like this...
+	<br>
 <img style="border: 2px solid #555;" src="./Items_Index.png" alt="Index page for Items">
 </li>
 </ol>
@@ -57,7 +58,7 @@ We will modify the controller code so that the table is sorted by Description.
 </ol>
 
 <hr>
-<h2>Part B: Add a sort link </h2>
+<h2>Part C: Add a sort link </h2>
 <p class="description">
 We will make the Desc heading a hyper-link so that we can toggle between ascending and descending sort.
 </p>
@@ -97,14 +98,14 @@ public async Task&lt;IActionResult&gt; Index(string sortOrder="description_a")
 </ol>
 
 <hr>
-<h2>Part C: Exercise</h2>
+<h2>Part D: Exercise</h2>
 <ol>
 	<li>Add the ability to sort by Cost </li>
 	<li>Add the ability to sort by Vendor Name </li>
 </ol>
 
 <hr>
-<h2>Part D: Optional Advanced Exercise</h2>
+<h2>Part E: Optional Advanced Exercise</h2>
 <p class="description">
 Our solution includes many magic strings like "description_d", this is not very pro, even if it is common in web applications.  Your mission is to refactor the code removing the reliance on magic strings.
 </p>
