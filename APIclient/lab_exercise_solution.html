@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		API Client
+	</title>
+</head>
+
+<body>
+<h1>API Client Exercise Solution</h1>
+
+<pre class="code">
+        public async Task&lt;ActionResult&gt; Complete(int id)
+
+        {
+      
+            try
+            {
+                var response = await myHttpClient.PutAsync($"TodoItems/Complete/{id}",null);
+
+                if (! response.IsSuccessStatusCode)
+                {
+                    ViewData["ErrorMessage"] = $"unexpected error calling TodoItems/Complete{id}";
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewData["ErrorMessage"] = ex.Message;
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+</pre>
+
+<pre class="code">
+@Html.ActionLink("Complete", "Complete", new { id=item.id })
+</pre>
+
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		API Assignment
+	</title>
+</head>
+
+<body>
+<h1>API Assignment</h1>
+<p class="description">
+Today we will build an API Web Service and corresponding client MVC application to implement a simple shopping list.
+</p>
+
+<hr>
+<h2>API Project</h2>
+<ol>
+	<li>Name your project: ShoppingListApi
+	</li>
+	<li>Use this class for the Model
+<pre class="code">
+    public class ShoppingListItem
+    {
+        int id;
+        string? Item;
+        bool Purchased;
+    }
+</pre>
+	</li>
+	<li>Store the ShoppingListItem objects in a SQLite DB.  </li>
+	<li>Implement these methods
+		<ul>
+			<li>GET GetShoppingListItems() - returns a list of all ShoppingListItems </li>
+			<li>POST PostShoppingListItem(ShoppingListItem shoppingListItem) - adds an item </li>
+			<li>PUT  MarkAsPurchased(int id) - set Purchased to true for one item
+			</li>
+		</ul>
+	</li>
+</ol>
+
+<hr>
+<h2>API Client MVC Project</h2>
+<ol>
+	<li>Name your project ShoppingListApiClient </li>
+	<li>Implement pages that look something like these
+
+	</li>
+</ol>
+
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		API
+	</title>
+</head>
+
+<body>
+<h1>API</h1>
+<p class="description">
+The Microsoft tutorial <a href="https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-8.0&tabs=visual-studio">Create a web API with ASP.NET Core</a> is excellent.  We will use it as the foundation of this lab.
+</p>
+
+<hr>
+<h2>Part A: Tutorial</h2>
+<ol>
+<li>Complete the Tutorial through <strong>Test the DeleteTodoItem method</strong>
+</li>
+</ol>
+
+<hr>
+<h2>Part B: Exercise</h2>
+<ol>
+	<li>Add a <span class=cmd>Complete</span> PUT method to the Controller with this signature
+<pre class="code">	
+// PUT: api/TodoItems/Complete/5
+[HttpPut("Complete/{id}")]
+public async Task&lt;ActionResult&gt; CopmleteTodoItem(long id)
+{
+	// Fetch the item from the DB
+
+	// Set IsComplete to true
+
+	// Save the change to the DB 
+}
+</pre>
+	</li>
+	<li>Test your work from Swagger
+	</li>
+</ol>
+
+</body>
+</html>

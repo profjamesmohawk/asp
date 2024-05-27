@@ -100,7 +100,7 @@ the CHDB data base described in the course reference material: <a href="../sql/s
         @Html.DropDownList("vendorID",   @* parameter name passed to Index() method *@
                  (IEnumerable&lt;SelectListItem&gt;)ViewBag.Vendors, @* List of Vendors from the controller *@
                  "All", @* default selection *@
-                 new { onchange = "submit()" } @* code to execucte on select *@
+                 new { onchange = "submit()" } @* HTML attributes *@
                  )
     &lt;p&gt;
 &lt;/form&gt;
