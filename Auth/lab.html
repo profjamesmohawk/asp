@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		Auth
+	</title>
+</head>
+
+<body>
+<h1>Authentication and Authorization</h1>
+
+<hr>
+<h2>Part A: Setup</h2>
+<ol>
+<li>Create a new MVC Project: ASP.NET Core Web App (Modle-View-Controller) </li>
+<li>Project Name: AuthLab</li>
+<li>Authentication Type: Individual Accounts </li>
+</ol>
+
+<hr>
+<h2>Part B: Populate the Auth DB</h2>
+<ol>
+	<li>From the Package Manager Console, run
+<pre class="code">
+Update-database
+</pre>
+	</li>
+</ol>
+
+<hr>
+<h2>Part C: Create two accounts </h2>
+
+<ol>
+	<li>Run the app </li>
+	<li>Click the <strong>Register</strong> link and add two users
+		<ul>
+			<li>alice@example.com </li>
+			<li>bob@example.com </li>
+		</ul>
+	</li>
+	<li>Make sure to click on the <strong>Click here to confirm your account</strong> link for each user.
+	</li>
+	<li>Check our work by logging on as alice and then bob
+	</li>
+</ol>
+
+<hr>
+<h2>Part D: Limit access</h2>
+<ol>
+	<li>Decorate the HomeController.Privacy() method
+<pre class="code">
+[Authorize]
+public IActionResult Privacy()
+{
+    return View();
+}
+</pre>
+	</li>
+	<li>You will also need to add <span class=cmd> using Microsoft.AspNetCore.Authorization; </span>
+	</li>
+	<li>Test our work by navigating to the Privacy page. (Logged in and not)
+	</li>
+</ol>
+
+<hr>
+<h2>Part E: Role based access</h2>
+<ol>
+	<li>In SQL Server Object Explorer, right-click the (localdb)\MSSQLLocalDB database and select New Query... 
+	</li>
+	<li>Run these queries
+<pre class="code">
+INSERT INTO AspNetRoles (Id, [Name]) VALUES(NEWID(), 'Admin');
+</pre>
+<pre class="code">
+INSERT INTO AspNetUserRoles
+  VALUES((SELECT Id FROM AspNetUsers WHERE UserName = 'alice@example.com'),
+         (SELECT Id FROM AspNetRoles WHERE [Name] = 'Admin'));
+</pre>
+	</li>
+</ol>
+</body>
+</html>
